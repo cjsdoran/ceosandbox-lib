@@ -1,0 +1,370 @@
+/* ============================================================================
+   ceosandbox.css — v1
+   The single source of truth for CEOSandbox visual tokens and base components.
+   Governed by the CEOSandbox Design System (Praxis). Apps never redeclare a
+   token and never hard-code a hex or a pixel value.
+
+   Load order in an app:
+     1. IBM Plex from Google Fonts (Design System §13.1)
+     2. this file
+     3. the app's own <style>, which may only compose from these tokens
+   ========================================================================= */
+
+/* ── Tokens (Design System §13.2) ─────────────────────────────────────── */
+:root {
+  /* Brand: navy */
+  --navy-50:#F2F7FB;  --navy-100:#E4EEF6; --navy-200:#C3D8E9; --navy-300:#9BBBD7;
+  --navy-400:#5E8FBE; --navy-500:#2E6BB0; --navy-600:#1E4D82; --navy-700:#153862;
+  --navy-800:#0E2A47; --navy-900:#08182B;
+
+  /* Neutrals */
+  --ink:#1A2433; --ink-2:#46505F; --ink-3:#6B7685; --ink-4:#99A2AE;
+  --border:#E3E7EC; --border-strong:#CBD2DB;
+  --surface:#FFFFFF; --canvas:#F6F8FA; --canvas-sunken:#EEF2F6;
+
+  /* Semantic */
+  --success:#1F7A5C; --success-bg:#E6F2EC;
+  --warning:#B7791F; --warning-text:#8A5A12; --warning-bg:#FBF1DD;
+  --danger:#B23A3A;  --danger-bg:#FBE9E9;
+  --info:#1E4D82;
+
+  /* Accent: gold */
+  --gold:#C98A1E; --gold-text:#8A6212; --gold-bg:#FBF1DD;
+
+  /* Categorical (charts) */
+  --cat-1:#153862; --cat-2:#2E6BB0; --cat-3:#1F7A5C; --cat-4:#C98A1E;
+  --cat-5:#B23A3A; --cat-6:#5B5A8C; --cat-7:#3E8E8E; --cat-8:#9A6A3A;
+
+  /* Type */
+  --font-serif:"IBM Plex Serif", Georgia, serif;
+  --font-sans:"IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-mono:"IBM Plex Mono", ui-monospace, monospace;
+
+  /* Radius */
+  --radius-sm:4px; --radius-md:6px; --radius-lg:10px; --radius-pill:999px;
+
+  /* Elevation */
+  --shadow-sm:0 1px 2px rgba(8,24,43,.06);
+  --shadow-md:0 2px 8px rgba(8,24,43,.08);
+  --shadow-lg:0 8px 24px rgba(8,24,43,.12);
+
+  /* Spacing (4px base) */
+  --space-1:4px;  --space-2:8px;  --space-3:12px; --space-4:16px; --space-5:20px;
+  --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px; --space-16:64px;
+
+  /* Motion */
+  --ease:cubic-bezier(.2,.6,.2,1); --dur-fast:150ms; --dur:200ms; --dur-slow:400ms;
+
+  /* App identity (rename to rebrand) */
+  --app-name:"Praxis";
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font: 400 15px/1.5 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2 { font-family: var(--font-serif); font-weight: 600; color: var(--ink); margin: 0; }
+h3 { font: 600 17px/1.4 var(--font-sans); color: var(--ink); margin: 0; }
+p { margin: 0 0 var(--space-4); }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--navy-600); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { color: var(--navy-700); }
+
+.num, .figure, td.figure { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+*:focus-visible { outline: 2px solid var(--navy-500); outline-offset: 2px; }
+
+.cs-visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ── Layout ───────────────────────────────────────────────────────────── */
+.cs-app { min-height: 100vh; padding: var(--space-10) var(--space-6) var(--space-16); }
+.cs-wide   { max-width: 1200px; margin: 0 auto; }   /* dashboards, workspaces */
+.cs-narrow { max-width: 720px;  margin: 0 auto; }   /* reading, briefing, chat */
+.cs-section + .cs-section { margin-top: var(--space-10); }
+.cs-stack > * + * { margin-top: var(--space-4); }
+.cs-row { display: flex; align-items: center; gap: var(--space-3); }
+.cs-row-end { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-3); }
+.cs-rule { border: 0; border-top: 1px solid var(--border); margin: var(--space-8) 0; }
+
+/* ── The Lead (Design System §2) ──────────────────────────────────────── */
+.lead { margin-bottom: var(--space-8); }
+.lead-rule { display: block; width: 32px; height: 3px; background: var(--gold); margin-bottom: var(--space-3); }
+.lead-eyebrow {
+  font: 600 12px/16px var(--font-sans); text-transform: uppercase;
+  letter-spacing: .08em; color: var(--ink-3); margin-bottom: var(--space-2);
+}
+.lead-title {
+  font: 600 26px/32px var(--font-serif); color: var(--ink);
+  max-width: 34ch; margin: 0;
+}
+.lead-title .num { font-size: .95em; }
+.lead-deck { font: 400 15px/24px var(--font-sans); color: var(--ink-2); margin-top: var(--space-3); max-width: 62ch; }
+.lead-lg .lead-title { font-size: 32px; line-height: 40px; }
+.lead-xl .lead-title { font-size: 40px; line-height: 46px; }
+
+/* ── Buttons (§9.1) ───────────────────────────────────────────────────── */
+.btn {
+  font: 600 15px/1 var(--font-sans); padding: 10px 18px; min-height: 40px;
+  border: none; border-radius: var(--radius-md); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  transition: background var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease);
+}
+.btn-primary { background: var(--navy-700); color: var(--surface); }
+.btn-primary:hover:not(:disabled) { background: var(--navy-800); }
+.btn-primary:active:not(:disabled) { background: var(--navy-900); }
+.btn-secondary { background: var(--surface); color: var(--navy-700); border: 1px solid var(--border-strong); }
+.btn-secondary:hover:not(:disabled) { background: var(--navy-50); }
+.btn-ghost { background: transparent; color: var(--navy-700); padding-left: var(--space-2); padding-right: var(--space-2); }
+.btn-ghost:hover:not(:disabled) { background: var(--navy-50); }
+.btn-danger { background: var(--danger); color: var(--surface); }
+.btn-sm { font-size: 13px; padding: 8px 14px; min-height: 32px; }
+.btn-lg { font-size: 17px; padding: 14px 24px; min-height: 48px; }
+.btn:disabled { background: var(--canvas-sunken); color: var(--ink-4); border-color: var(--border); cursor: not-allowed; }
+
+/* A link that behaves as the optional "go deeper" affordance */
+.cs-deeper {
+  font: 500 15px/1 var(--font-sans); color: var(--navy-600);
+  background: none; border: 0; padding: var(--space-2) 0; cursor: pointer;
+  display: inline-flex; align-items: center; gap: var(--space-2);
+}
+.cs-deeper:hover { color: var(--navy-700); text-decoration: underline; }
+
+/* ── Inputs (§9.2) ────────────────────────────────────────────────────── */
+.field {
+  font: 400 15px/1.4 var(--font-sans); color: var(--ink); width: 100%;
+  background: var(--surface); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm); padding: 10px 12px;
+}
+.field::placeholder { color: var(--ink-4); }
+.field:focus { border-color: var(--navy-500); outline: 2px solid var(--navy-500); outline-offset: 0; }
+textarea.field { min-height: 120px; resize: vertical; line-height: 1.6; }
+.field-label {
+  display: block; font: 500 12px/1 var(--font-sans); color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px;
+}
+.field-help { font: 400 13px/20px var(--font-sans); color: var(--ink-3); margin-top: var(--space-2); }
+
+/* ── Cards (§9.4) ─────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: var(--space-6);
+}
+.card-dense { padding: var(--space-5); }
+.card-raised { box-shadow: var(--shadow-sm); }
+.card-header { font: 600 17px/1.4 var(--font-sans); color: var(--ink); margin-bottom: var(--space-1); }
+.card-deck { font: 400 13px/1.5 var(--font-sans); color: var(--ink-2); }
+.cs-grid { display: grid; gap: var(--space-5); }
+.cs-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.cs-grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+/* A selectable card (industry pickers, scenario choosers) */
+.cs-choice {
+  text-align: left; width: 100%; cursor: pointer; font: inherit; color: inherit;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: var(--space-5);
+  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.cs-choice:hover { border-color: var(--border-strong); background: var(--navy-50); }
+.cs-choice[aria-pressed="true"], .cs-choice.is-selected {
+  border-color: var(--navy-500); background: var(--navy-50); box-shadow: inset 3px 0 0 var(--navy-500);
+}
+
+/* ── Tables (§9.5) ────────────────────────────────────────────────────── */
+.cs-table { width: 100%; border-collapse: collapse; }
+.cs-table th {
+  font: 600 12px/16px var(--font-sans); color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: .04em; text-align: left;
+  padding: 0 var(--space-3) var(--space-2); border-bottom: 1px solid var(--border-strong);
+}
+.cs-table th.figure, .cs-table td.figure { text-align: right; }
+.cs-table td { padding: var(--space-3); border-bottom: 1px solid var(--border); font-size: 15px; }
+.cs-table tbody tr:hover { background: var(--navy-50); }
+.cs-table tbody tr.is-selected { background: var(--navy-100); box-shadow: inset 3px 0 0 var(--navy-500); }
+.cs-pos { color: var(--success); }
+.cs-neg { color: var(--danger); }
+
+/* ── Badges (§9.9) ────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  font: 500 12px/1 var(--font-sans); padding: 4px 10px; border-radius: var(--radius-pill);
+}
+.badge-pos  { background: var(--success-bg); color: var(--success); }
+.badge-warn { background: var(--warning-bg); color: var(--warning-text); }
+.badge-neg  { background: var(--danger-bg);  color: var(--danger); }
+.badge-info { background: var(--navy-50);    color: var(--navy-700); }
+.badge-quiet{ background: var(--canvas-sunken); color: var(--ink-3); }
+
+/* ── Insight callout (§9.10) — the one gold moment ────────────────────── */
+.insight {
+  background: var(--gold-bg); border-left: 3px solid var(--gold);
+  padding: var(--space-4) var(--space-5); border-radius: var(--radius-sm);
+}
+.insight-label {
+  font: 600 12px/1 var(--font-sans); text-transform: uppercase;
+  letter-spacing: .06em; color: var(--gold-text); margin-bottom: 6px;
+}
+
+/* A quiet note that is not the gold moment */
+.cs-note {
+  background: var(--canvas-sunken); border-left: 3px solid var(--border-strong);
+  padding: var(--space-4) var(--space-5); border-radius: var(--radius-sm);
+  font-size: 14px; color: var(--ink-2);
+}
+
+/* ── Briefing & reflection (§9.14 — the self-contained loop) ──────────── */
+.cs-briefing { max-width: 720px; margin: 0 auto; }
+.cs-briefing-body { font: 400 17px/27px var(--font-sans); color: var(--ink); max-width: 66ch; }
+.cs-briefing-body strong { font-weight: 600; }
+.cs-briefing-steps { display: grid; gap: var(--space-4); margin: var(--space-6) 0; }
+.cs-briefing-step { display: grid; grid-template-columns: 28px 1fr; gap: var(--space-3); align-items: start; }
+.cs-briefing-step-n {
+  font: 500 12px/20px var(--font-mono); color: var(--gold-text);
+  border-top: 2px solid var(--gold); padding-top: var(--space-1);
+}
+.cs-reflection { max-width: 720px; margin: 0 auto; }
+.cs-reflection-habits { display: grid; gap: var(--space-5); margin: var(--space-6) 0; }
+.cs-reflection-habit { border-left: 1px solid var(--border); padding-left: var(--space-4); }
+.cs-reflection-habit h3 { margin-bottom: var(--space-2); }
+
+/* ── Stepper & tabs (§9.6) ────────────────────────────────────────────── */
+.cs-stepper { display: flex; align-items: center; gap: var(--space-3); }
+.cs-step { display: flex; align-items: center; gap: var(--space-2); font: 500 13px/1 var(--font-sans); color: var(--ink-3); }
+.cs-step-dot { width: 8px; height: 8px; border-radius: var(--radius-pill); background: var(--border-strong); }
+.cs-step.is-current { color: var(--ink); }
+.cs-step.is-current .cs-step-dot { background: var(--navy-700); }
+.cs-step.is-done { color: var(--ink-2); }
+.cs-step.is-done .cs-step-dot { background: var(--success); }
+.cs-step-sep { width: 24px; height: 1px; background: var(--border); }
+
+.cs-tabs { display: flex; gap: var(--space-5); border-bottom: 1px solid var(--border); }
+.cs-tab {
+  font: 500 15px/1 var(--font-sans); color: var(--ink-2); background: none; border: 0;
+  padding: var(--space-3) 0; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.cs-tab[aria-selected="true"] { color: var(--navy-700); border-bottom-color: var(--navy-700); }
+
+/* ── Chips & drag-and-drop (§9.8) ─────────────────────────────────────── */
+.cs-chip {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  font: 500 13px/1 var(--font-sans); color: var(--ink);
+  background: var(--surface); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill); padding: 9px 14px; min-height: 40px;
+  cursor: grab; user-select: none;
+  transition: box-shadow var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.cs-chip:hover { border-color: var(--navy-400); }
+.cs-chip.is-dragging { box-shadow: var(--shadow-md); transform: scale(1.03); cursor: grabbing; }
+.cs-chip.is-held { border-color: var(--navy-500); box-shadow: 0 0 0 3px var(--navy-100); }
+.cs-chip.is-placed { cursor: default; }
+.cs-chip-op { font-family: var(--font-mono); font-size: 15px; min-width: 40px; justify-content: center; }
+.cs-chip-unit { font: 400 12px/1 var(--font-mono); color: var(--ink-3); }
+
+.cs-slot {
+  border: 1px dashed var(--border-strong); border-radius: var(--radius-md);
+  background: var(--canvas-sunken); min-height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.cs-slot.is-target { border-color: var(--navy-500); background: var(--navy-50); border-style: solid; }
+.cs-slot.is-correct { border: 1px solid var(--success); background: var(--success-bg); }
+.cs-slot.is-wrong { border: 1px solid var(--danger); background: var(--danger-bg); }
+.cs-slot-mark { font-family: var(--font-mono); font-size: 13px; }
+.cs-slot.is-correct .cs-slot-mark { color: var(--success); }
+.cs-slot.is-wrong .cs-slot-mark { color: var(--danger); }
+
+.cs-pool {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);
+  padding: var(--space-5); display: flex; flex-wrap: wrap; gap: var(--space-2);
+}
+.cs-pool-label {
+  width: 100%; font: 600 12px/16px var(--font-sans); color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: .04em; margin-bottom: var(--space-1);
+}
+.cs-pool-hint { width: 100%; font: 400 13px/20px var(--font-sans); color: var(--ink-3); margin-bottom: var(--space-3); }
+
+/* ── AI chat panel (§9.7) ─────────────────────────────────────────────── */
+.cs-chat { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-6); }
+.cs-turn-ai { border-left: 3px solid var(--navy-500); padding-left: var(--space-4); }
+.cs-turn-label { font: 500 12px/16px var(--font-sans); color: var(--ink-3); margin-bottom: var(--space-2); }
+.cs-turn-ai-body { font: 400 15px/25px var(--font-sans); color: var(--ink); }
+.cs-turn-user {
+  align-self: flex-end; max-width: 80%; background: var(--navy-100);
+  border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); color: var(--ink);
+}
+.cs-typing { display: inline-flex; gap: 5px; padding: var(--space-2) 0; }
+.cs-typing span {
+  width: 6px; height: 6px; border-radius: var(--radius-pill); background: var(--ink-3);
+  animation: cs-pulse 1.2s infinite var(--ease);
+}
+.cs-typing span:nth-child(2) { animation-delay: .15s; }
+.cs-typing span:nth-child(3) { animation-delay: .30s; }
+@keyframes cs-pulse { 0%,60%,100% { opacity:.25 } 30% { opacity:1 } }
+.cs-ai-label { font: 500 11px/1 var(--font-sans); color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; }
+
+.cs-timer { font: 500 15px/1 var(--font-mono); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.cs-timer.is-warning { color: var(--warning-text); }
+.cs-timer.is-danger { color: var(--danger); }
+
+/* ── Modal, popover, toast (§9.11) ────────────────────────────────────── */
+.cs-scrim {
+  position: fixed; inset: 0; background: rgba(8,24,43,.40);
+  display: flex; align-items: center; justify-content: center; padding: var(--space-6); z-index: 100;
+}
+.cs-modal {
+  background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+  max-width: 560px; width: 100%; padding: var(--space-6); max-height: 85vh; overflow: auto;
+}
+.cs-modal-wide { max-width: 720px; }
+.cs-modal-title { font: 600 20px/28px var(--font-serif); margin-bottom: var(--space-3); }
+.cs-modal-actions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-6); }
+
+.cs-toast-host { position: fixed; bottom: var(--space-6); left: 50%; transform: translateX(-50%); z-index: 200;
+                 display: flex; flex-direction: column; gap: var(--space-2); align-items: center; }
+.cs-toast {
+  background: var(--ink); color: var(--surface); border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-5); font: 400 14px/20px var(--font-sans);
+  box-shadow: var(--shadow-md); max-width: 520px;
+}
+.cs-toast-success { border-left: 3px solid var(--success); }
+.cs-toast-warning { border-left: 3px solid var(--warning); }
+.cs-toast-error   { border-left: 3px solid var(--danger); }
+
+/* ── Empty, loading, error (§9.12) ────────────────────────────────────── */
+.cs-empty { color: var(--ink-2); font-size: 15px; }
+.cs-skeleton { background: var(--canvas-sunken); border-radius: var(--radius-sm); height: 1em; animation: cs-shimmer 1.4s infinite var(--ease); }
+@keyframes cs-shimmer { 0%,100% { opacity:1 } 50% { opacity:.55 } }
+.cs-progress { height: 2px; background: var(--navy-500); width: 0; transition: width var(--dur) var(--ease); }
+
+/* ── Result display (§9.13) ───────────────────────────────────────────── */
+.cs-result { font: 600 32px/40px var(--font-serif); color: var(--ink); }
+.cs-result .num { font-family: var(--font-mono); }
+.cs-result-high .num { color: var(--success); }
+.cs-result-low .num  { color: var(--danger); }
+
+/* ── Small-viewport gate (desktop-first, Design System §5) ────────────── */
+.cs-viewport-gate { display: none; }
+@media (max-width: 1023px) {
+  .cs-requires-wide .cs-viewport-gate {
+    display: flex; position: fixed; inset: 0; background: var(--canvas); z-index: 300;
+    align-items: center; justify-content: center; padding: var(--space-8); text-align: center;
+  }
+  .cs-requires-wide .cs-app { display: none; }
+}
+
+/* ── Reduced motion (§12) ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

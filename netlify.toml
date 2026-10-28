@@ -1,0 +1,32 @@
+# CEOSandbox shared library host
+# Deploys the /v1/ shared modules that every sim links to.
+
+[build]
+  publish = "."
+  command = ""
+
+# ── Shared library ──────────────────────────────────────────────────────
+# Cached briefly, NOT immutably. /v1/ receives backward-compatible fixes and
+# every app must inherit them without being touched, so a long max-age would
+# defeat the whole point. Five minutes plus stale-while-revalidate gives
+# instant repeat loads and same-day propagation of a fix.
+[[headers]]
+  for = "/v1/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300, stale-while-revalidate=86400"
+    Access-Control-Allow-Origin = "*"
+    X-Content-Type-Options = "nosniff"
+
+# A breaking change ships as /v2/ and old apps stay on /v1/ untouched.
+
+# ── Everything else ─────────────────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Canvas embeds the sims in an iframe, so the smoke page and any future
+# embedded assets must not be frame-denied from the LMS origin. Loosen this
+# per-path when the Canvas origin is known rather than globally.

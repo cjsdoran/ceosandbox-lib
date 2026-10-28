@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CEOSandbox library — smoke test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../v1/ceosandbox.css">
+</head>
+<body>
+<main class="cs-app cs-wide" id="app"></main>
+
+<script src="../v1/ceosandbox.js"></script>
+<script>
+/* Exercises every component in the shared library. Open this after any change
+   to /v1/ and before deploying: it is the drift check for 40 apps. */
+var app = document.getElementById('app');
+function section(title, node){
+  var s = CS.el('section', {class:'cs-section'}, [
+    CS.el('h2', {style:'font:600 20px/28px var(--font-serif);margin-bottom:var(--space-4)', text:title}),
+    node
+  ]);
+  app.appendChild(s);
+}
+
+/* ── The Lead ─────────────────────────────────────────────────────────── */
+app.appendChild(CS.lead({
+  eyebrow: 'SHARED LIBRARY',
+  title: 'Every component the fleet reuses renders here, so drift is caught before it ships.',
+  deck: 'ceosandbox.css and ceosandbox.js, v1. Check this page after any change to the library.'
+}));
+
+/* ── Buttons ──────────────────────────────────────────────────────────── */
+section('Buttons', CS.el('div', {class:'cs-row'}, [
+  CS.el('button', {class:'btn btn-primary', text:'Primary action'}),
+  CS.el('button', {class:'btn btn-secondary', text:'Secondary'}),
+  CS.el('button', {class:'btn btn-ghost', text:'Ghost'}),
+  CS.el('button', {class:'btn btn-danger', text:'Destructive'}),
+  CS.el('button', {class:'btn btn-primary', disabled:true, text:'Disabled'})
+]));
+
+/* ── Type & numbers ───────────────────────────────────────────────────── */
+section('Numbers and formatting', CS.el('div', {class:'card'}, [
+  CS.el('table', {class:'cs-table'}, [
+    CS.el('thead', {}, [CS.el('tr', {}, [
+      CS.el('th', {text:'Call'}), CS.el('th', {class:'figure', text:'Output'})
+    ])]),
+    CS.el('tbody', {}, [
+      ['CS.fmt.value(0.849, "%", 1)', CS.fmt.value(0.849,'%',1)],
+      ['CS.fmt.value(4921, "$m/yr", 0)', CS.fmt.value(4921,'$m/yr',0)],
+      ['CS.fmt.value(1.6705, "CPM", 2)', CS.fmt.value(1.6705,'CPM',2)],
+      ['CS.fmt.change(5515, 5285)', CS.fmt.change(5515,5285)],
+      ['CS.fmt.pp(0.849, 0.812)', CS.fmt.pp(0.849,0.812)]
+    ].map(function(r){
+      return CS.el('tr', {}, [
+        CS.el('td', {}, [CS.el('code', {style:'font-family:var(--font-mono);font-size:13px', text:r[0]})]),
+        CS.el('td', {class:'figure', text:r[1]})
+      ]);
+    }))
+  ])
+]));
+
+/* ── Cards, badges, insight ───────────────────────────────────────────── */
+section('Cards, badges and the gold moment', CS.el('div', {class:'cs-grid cs-grid-3'}, [
+  CS.el('div', {class:'card'}, [
+    CS.el('div', {class:'card-header', text:'A flat card'}),
+    CS.el('div', {class:'card-deck', text:'Border only. Shadows are for things that float.'})
+  ]),
+  CS.el('div', {class:'card'}, [
+    CS.el('div', {class:'card-header', text:'Badges'}),
+    CS.el('div', {class:'cs-row', style:'margin-top:var(--space-3);flex-wrap:wrap'}, [
+      CS.el('span', {class:'badge badge-pos', text:'\u2713 On plan'}),
+      CS.el('span', {class:'badge badge-warn', text:'\u25B3 Watch'}),
+      CS.el('span', {class:'badge badge-neg', text:'\u2212 Off plan'}),
+      CS.el('span', {class:'badge badge-info', text:'Info'})
+    ])
+  ]),
+  CS.el('div', {class:'insight'}, [
+    CS.el('div', {class:'insight-label', text:'Root cause'}),
+    CS.el('div', {text:'Used once per screen. The only place gold backgrounds appear.'})
+  ])
+]));
+
+/* ── Stepper, tabs, chips, slots ──────────────────────────────────────── */
+section('Stepper', CS.stepper(['Briefing','Build','Diagnose','Reflect'], 1));
+
+var dnd = CS.dnd({
+  onDrop: function(card, slot){
+    if (slot.firstChild) return false;
+    slot.appendChild(card); card.dataset.placed = 'true';
+    slot.classList.add('is-correct');
+    slot.appendChild(CS.el('span', {class:'cs-slot-mark', text:' \u2713'}));
+    CS.toast('Placed.', {type:'success'});
+    return true;
+  },
+  onReturn: function(card){ pool.appendChild(card); card.dataset.placed = 'false'; }
+});
+var pool = CS.el('div', {class:'cs-pool'}, [
+  CS.el('div', {class:'cs-pool-label', text:'Metrics'}),
+  CS.el('div', {class:'cs-pool-hint', text:'Drag a card into a slot, or press Enter to pick it up and Enter again on a slot.'})
+]);
+['Load Factor','Fuel Price','Day Rate'].forEach(function(l){
+  pool.appendChild(dnd.source(CS.el('span', {class:'cs-chip', dataset:{label:l, id:l}}, [
+    l, CS.el('span', {class:'cs-chip-unit', text:'%'})
+  ])));
+});
+['\u00d7','\u00f7','+','\u2212'].forEach(function(o){
+  pool.appendChild(dnd.source(CS.el('span', {class:'cs-chip cs-chip-op', dataset:{label:'Operator '+o, id:o}, text:o})));
+});
+var slots = CS.el('div', {class:'cs-row', style:'margin-top:var(--space-4)'}, [
+  dnd.target(CS.el('div', {class:'cs-slot', style:'width:200px'})),
+  dnd.target(CS.el('div', {class:'cs-slot', style:'width:200px'})),
+  dnd.target(CS.el('div', {class:'cs-slot', style:'width:200px'}))
+]);
+section('Chips, slots and keyboard drag-and-drop', CS.el('div', {}, [pool, slots]));
+
+/* ── Inputs ───────────────────────────────────────────────────────────── */
+section('Inputs', CS.el('div', {class:'card', style:'max-width:520px'}, [
+  CS.el('label', {class:'field-label', for:'sp', text:'Your diagnosis'}),
+  CS.el('textarea', {class:'field', id:'sp', placeholder:'Which driver caused the move, and how do you know?'}),
+  CS.el('div', {class:'field-help', text:'Nothing you type is saved, sent or scored.'})
+]));
+
+/* ── Result, count-up, sparkline ──────────────────────────────────────── */
+var resultNum = CS.el('span', {class:'num', text:'0%'});
+section('Result, count-up and sparkline', CS.el('div', {class:'card'}, [
+  CS.el('div', {class:'cs-result cs-result-high'}, ['You captured ', resultNum, ' of available value']),
+  CS.el('div', {class:'cs-row', style:'margin-top:var(--space-5)'}, [
+    CS.el('span', {class:'card-deck', text:'Revenue trend'}),
+    CS.sparkline([4921,5515,5401,5172,5285], {label:'Revenue, five years'}),
+    CS.el('span', {class:'card-deck', text:'Load factor (falling)'}),
+    CS.sparkline([0.849,0.841,0.822,0.812,0.804], {highlight:'danger', label:'Load factor, five years'})
+  ]),
+  CS.el('div', {class:'cs-row', style:'margin-top:var(--space-5)'}, [
+    CS.el('button', {class:'btn btn-secondary btn-sm', text:'Replay count-up',
+      onclick:function(){ CS.countUp(resultNum, 0.94, {unit:'%', decimals:0}); }}),
+    CS.el('button', {class:'btn btn-secondary btn-sm', text:'Confetti (top-tier only)',
+      onclick:function(){ CS.confetti(); }})
+  ])
+]));
+CS.countUp(resultNum, 0.94, {unit:'%', decimals:0});
+
+/* ── Timer ────────────────────────────────────────────────────────────── */
+var timerNode = CS.el('span', {class:'cs-timer'});
+var timer = CS.timer(timerNode, 135, {onEnd:function(){ CS.toast('Time.', {type:'warning'}); }});
+section('Timer', CS.el('div', {class:'cs-row'}, [
+  timerNode,
+  CS.el('button', {class:'btn btn-secondary btn-sm', text:'Start', onclick:timer.start}),
+  CS.el('button', {class:'btn btn-ghost btn-sm', text:'Stop', onclick:timer.stop}),
+  CS.el('span', {class:'card-deck', text:'Turns amber at 2:00, red at 0:30.'})
+]));
+
+/* ── Chat panel ───────────────────────────────────────────────────────── */
+var chatHost = CS.el('div', {class:'card'});
+section('AI chat panel', chatHost);
+var chat = CS.chat({
+  mount: chatHost, persona:'Arvind Rao, Plant Manager',
+  onSend: function(){ chat.startTyping(); setTimeout(function(){
+    chat.ai('That is the third time head office has asked. What is different this time?');
+  }, 900); }
+});
+chat.ai('You wanted to talk about the changeover targets. I have ten minutes.');
+
+/* ── Toast, modal ─────────────────────────────────────────────────────── */
+section('Toast and modal', CS.el('div', {class:'cs-row'}, [
+  CS.el('button', {class:'btn btn-secondary', text:'Success toast', onclick:function(){
+    CS.toast('Tree complete. Every driver is in the right place.', {type:'success'}); }}),
+  CS.el('button', {class:'btn btn-secondary', text:'Error toast', onclick:function(){
+    CS.toast('The industry data did not load. Reload the page.', {type:'error'}); }}),
+  CS.el('button', {class:'btn btn-secondary', text:'Open modal', onclick:function(){
+    CS.modal({title:'How profit trees work', wide:true,
+      content: CS.el('div', {class:'cs-briefing-body'}, [
+        CS.el('p', {text:'A profit number tells you the result and nothing about the cause.'}),
+        CS.el('p', {text:'Escape closes this. Tab is trapped inside. Focus returns to the button.'})
+      ]),
+      actions:[{label:'Back to the briefing', primary:true}]}); }})
+]));
+
+/* ── Briefing and reflection modules ──────────────────────────────────── */
+section('Briefing module', CS.briefing({
+  lead:{eyebrow:'PROFIT TREE BUILDER', title:'Profit is never one number. Take one apart and you can see exactly where it is made.', deck:'Build an industry\u2019s profit tree, then use it to diagnose five years of results.'},
+  body:['A profit tree breaks a single profit figure into the drivers that produce it, and breaks each of those into its own drivers, until you reach things a manager can actually pull.'],
+  steps:[
+    {title:'Build it', text:'Drag metrics and operators into the tree until the structure is complete and correct.'},
+    {title:'Use it', text:'The finished tree fills with five years of data. Follow the branches to the driver that caused the move.'}
+  ],
+  deeper:{label:'How profit trees work', title:'How profit trees work',
+    render:function(){ return CS.el('div', {class:'cs-briefing-body'}, [CS.el('p', {text:'The concept click-through lives off the main path.'})]); }},
+  action:{label:'Build the airline tree', onClick:function(){ CS.toast('Primary action fired.'); }}
+}));
+
+section('Reflection module', CS.reflection({
+  lead:{eyebrow:'THE TAKEAWAY', title:'Decomposition finds the cause. The headline number only ever shows you the symptom.', deck:'What you just did, and where it transfers.'},
+  body:['You built a structure before you looked at a single number, then let the structure tell you where to look.'],
+  habits:[
+    {title:'Decompose before you diagnose', text:'Ask what the business actually sells, and build down from there.'},
+    {title:'Follow the change, not the size', text:'The cause is the branch that moved, rarely the branch with the largest number.'}
+  ],
+  actions:[{label:'Look at the tree again'},{label:'Try another industry', primary:true, onClick:function(){ CS.toast('Reset fired.'); }}]
+}));
+
+/* ── Empty and loading states ─────────────────────────────────────────── */
+section('Empty and loading', CS.el('div', {class:'cs-grid cs-grid-2'}, [
+  CS.el('div', {class:'card'}, [
+    CS.el('div', {class:'cs-empty', text:'Choose an industry above to see what its profit tree covers.'})
+  ]),
+  CS.el('div', {class:'card'}, [
+    CS.el('div', {class:'cs-skeleton', style:'width:60%'}),
+    CS.el('div', {class:'cs-skeleton', style:'width:90%;margin-top:var(--space-3)'}),
+    CS.el('div', {class:'cs-skeleton', style:'width:40%;margin-top:var(--space-3)'})
+  ])
+]));
+
+section('Library version', CS.el('p', {class:'card-deck', text:'CS.version = ' + CS.version}));
+</script>
+</body>
+</html>

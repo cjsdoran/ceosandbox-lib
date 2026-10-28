@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CEOSandbox shared library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/v1/ceosandbox.css">
+</head>
+<body>
+<main class="cs-app cs-narrow">
+  <div class="lead">
+    <span class="lead-rule" aria-hidden="true"></span>
+    <div class="lead-eyebrow">CEOSANDBOX</div>
+    <h1 class="lead-title">The shared library every simulation links to, hosted once and versioned.</h1>
+    <p class="lead-deck">Fix a component here and all forty sims inherit the fix, with no build step and nothing to redeploy.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Current version — v1</div>
+    <table class="cs-table" style="margin-top:var(--space-4)">
+      <thead><tr><th>Module</th><th>Carries</th></tr></thead>
+      <tbody>
+        <tr><td><a href="/v1/ceosandbox.css">ceosandbox.css</a></td><td>Design tokens and base components</td></tr>
+        <tr><td><a href="/v1/ceosandbox.js">ceosandbox.js</a></td><td>UI components: Lead, briefing, reflection, drag-and-drop, chat, timer, toast, modal, count-up, sparkline</td></tr>
+      </tbody>
+    </table>
+    <p class="field-help" style="margin-top:var(--space-4)">
+      <code style="font-family:var(--font-mono);font-size:13px">ceosandbox-agents.js</code> ships with the first AI simulation.
+    </p>
+  </div>
+
+  <div class="cs-note" style="margin-top:var(--space-6)">
+    v1 receives backward-compatible changes only. A breaking change ships as
+    <code style="font-family:var(--font-mono)">/v2/</code> and existing apps stay on v1 untouched.
+  </div>
+
+  <p style="margin-top:var(--space-6)"><a href="/smoke/">Component smoke test →</a></p>
+</main>
+</body>
+</html>
